@@ -43,6 +43,7 @@ namespace MemcacheDemo
             });
             readC.Start();
 
+            Console.WriteLine(Status(mc));
             Console.WriteLine("Bored now...");
             Console.ReadLine();
         }
@@ -83,6 +84,23 @@ namespace MemcacheDemo
 
             pool.Nagle = false;
             pool.Initialize();
+        }
+
+        public static string Status(MemcachedClient mc)
+        {
+            var sb = new StringBuilder("Cachestatus:" + Environment.NewLine);
+            IDictionary stats = mc.Stats();
+            foreach (string key1 in stats.Keys)
+            {
+                sb.AppendLine(key1);
+                var values = (Hashtable)stats[key1];
+                foreach (string key2 in values.Keys)
+                {
+                    sb.AppendLine(key2 + ":" + values[key2]);
+                }
+                sb.AppendLine();
+            }
+            return sb.ToString();
         }
     }
 }
